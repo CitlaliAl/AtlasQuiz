@@ -1,4 +1,17 @@
 <resources>
     <string name="app_name">Atlas Quiz</string>
     <string name="app_tagline">Aprende las capitales de Asia y Europa</string>
+
+    <string name="home_question">¿Qué quieres practicar?</string>
+    <string name="home_progress_label">Tu progreso</string>
+    <string name="home_progress_summary">%1$d quizzes · %2$d puntos</string> //Los %1$d y %2$d son huecos que se llenan con números al mostrar el texto
+    <string name="home_progress_note">Datos temporales: se reinician al cerrar la app</string>
+    <string name="home_card_title_asia">Quiz de Asia</string>
+    <string name="home_card_title_europe">Quiz de Europa</string>
+    <string name="home_card_subtitle">%1$d países · %2$d preguntas</string>
+    <string name="home_card_selected">Seleccionado</string>
+    <string name="home_choose_continent">Elige un continente para empezar</string>
+    <string name="home_need_more_countries">Se necesitan al menos %1$d países en este continente. Agrega más para iniciar el quiz.</string>
+    <string name="home_start_quiz">Iniciar quiz</string>
+    <string name="home_add_country">Agregar país y capital</string>
 </resources>
