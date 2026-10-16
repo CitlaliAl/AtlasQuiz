@@ -27,6 +27,10 @@ class QuizViewModel : ViewModel() {
         _uiState.value = QuizUiState(continent = continent, questions = questions)
     }
 
+    fun restartQuiz() {
+        _uiState.value.continent?.let { startQuiz(it) }
+    }
+
     fun onAnswerSelected(capital: String) {
         _uiState.update { current ->
             val question = current.currentQuestion

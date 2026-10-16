@@ -2,6 +2,7 @@ package com.upchiapas.atlasquiz.presentation.quiz
 
 import com.upchiapas.atlasquiz.model.Continent
 import com.upchiapas.atlasquiz.model.Country
+import com.upchiapas.atlasquiz.model.QuizRules
 
 data class QuizQuestion(
     val country: Country,
@@ -14,6 +15,12 @@ data class AnswerRecord(
     val selectedCapital: String,
     val isCorrect: Boolean
 )
+
+enum class ResultLevel {
+    EXCELLENT,
+    GOOD,
+    KEEP_PRACTICING
+}
 
 data class QuizUiState(
     val continent: Continent? = null,
@@ -38,4 +45,17 @@ data class QuizUiState(
 
     val progress: Float
         get() = if (questions.isEmpty()) 0f else (currentIndex + 1f) / questions.size
+
+    val correctCount: Int
+        get() = answers.count { it.isCorrect }
+
+    val percentage: Int
+        get() = if (questions.isEmpty()) 0 else correctCount * 100 / questions.size
+
+    val resultLevel: ResultLevel
+        get() = when {
+            percentage == 100 -> ResultLevel.EXCELLENT
+            percentage >= QuizRules.PASSING_PERCENTAGE -> ResultLevel.GOOD
+            else -> ResultLevel.KEEP_PRACTICING
+        }
 }

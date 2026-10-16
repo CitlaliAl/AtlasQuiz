@@ -6,8 +6,10 @@ import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -17,6 +19,7 @@ import com.upchiapas.atlasquiz.presentation.home.HomeViewModel
 import com.upchiapas.atlasquiz.presentation.navigation.AtlasQuizRoutes
 import com.upchiapas.atlasquiz.presentation.quiz.QuizScreen
 import com.upchiapas.atlasquiz.presentation.quiz.QuizViewModel
+import com.upchiapas.atlasquiz.presentation.result.ResultScreen
 
 @Composable
 fun AtlasQuizApp() {
@@ -50,7 +53,21 @@ fun AtlasQuizApp() {
                 }
             )
         }
-        composable(AtlasQuizRoutes.RESULT) { PlaceholderScreen(AtlasQuizRoutes.RESULT) }
+        composable(AtlasQuizRoutes.RESULT) {
+            val quizState by quizViewModel.uiState.collectAsStateWithLifecycle()
+            ResultScreen(
+                state = quizState,
+                onPlayAgain = {
+                    quizViewModel.restartQuiz()
+                    navController.navigate(AtlasQuizRoutes.QUIZ) {
+                        popUpTo(AtlasQuizRoutes.RESULT) { inclusive = true }
+                    }
+                },
+                onGoHome = {
+                    navController.popBackStack(AtlasQuizRoutes.HOME, inclusive = false)
+                }
+            )
+        }
         composable(AtlasQuizRoutes.ADD_COUNTRY) { PlaceholderScreen(AtlasQuizRoutes.ADD_COUNTRY) }
     }
 }

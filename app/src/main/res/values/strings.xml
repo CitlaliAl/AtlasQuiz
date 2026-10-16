@@ -2,6 +2,8 @@
     <string name="app_name">Atlas Quiz</string>
     <string name="app_tagline">Aprende las capitales de Asia y Europa</string>
 
+    <string name="action_back">Volver</string>
+
     <string name="home_question">¿Qué quieres practicar?</string>
     <string name="home_progress_label">Tu progreso</string>
     <string name="home_progress_summary">%1$d quizzes · %2$d puntos</string>
@@ -27,4 +29,15 @@
     <string name="quiz_option_wrong">Respuesta incorrecta</string>
     <string name="quiz_continue">Continuar</string>
     <string name="quiz_see_results">Ver resultados</string>
+
+    <string name="result_title">Resultado del quiz</string>
+    <string name="result_message_excellent">¡Excelente!</string>
+    <string name="result_message_good">¡Buen trabajo!</string>
+    <string name="result_message_practice">¡Sigue practicando!</string>
+    <string name="result_correct_summary">%1$d de %2$d correctas · %3$d%%</string>
+    <string name="result_points">%1$d puntos</string>
+    <string name="result_review_title">Revisa tus respuestas</string>
+    <string name="result_wrong_detail">Elegiste %1$s • correcta: %2$s</string>
+    <string name="result_play_again">Jugar otra vez</string>
+    <string name="result_go_home">Volver al inicio</string>
 </resources>
