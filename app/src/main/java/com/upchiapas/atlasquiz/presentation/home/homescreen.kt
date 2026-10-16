@@ -2,13 +2,14 @@ package com.upchiapas.atlasquiz.presentation.home
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -31,12 +32,13 @@ import com.upchiapas.atlasquiz.R
 import com.upchiapas.atlasquiz.model.Continent
 import com.upchiapas.atlasquiz.model.QuizRules
 import com.upchiapas.atlasquiz.presentation.components.ContinentCard
+import com.upchiapas.atlasquiz.presentation.components.GreetingHeader
 import com.upchiapas.atlasquiz.presentation.components.ProgressSummaryCard
 import com.upchiapas.atlasquiz.presentation.theme.AtlasAsia
 import com.upchiapas.atlasquiz.presentation.theme.AtlasEurope
 
 @Composable
-fun HomeScreen(  //Con estado, conecta con el ViewModel y observa el estado. Es el único que sabe que existe un ViewModel
+fun HomeScreen(
     onStartQuiz: (Continent) -> Unit,
     onAddCountry: () -> Unit,
     viewModel: HomeViewModel = viewModel()
@@ -52,32 +54,33 @@ fun HomeScreen(  //Con estado, conecta con el ViewModel y observa el estado. Es 
 }
 
 @Composable
-fun HomeContent( //Sin estado, solo dibuja lo que recibe y avisa con callbacks. Se puede probar y reutilizar sin ViewModel
+fun HomeContent(
     state: HomeUiState,
     onContinentSelected: (Continent) -> Unit,
     onStartClick: () -> Unit,
     onAddCountryClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val sidePadding = Modifier.padding(horizontal = 20.dp)
+
     Column(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(20.dp),
+            .padding(vertical = 20.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Text(
-            text = stringResource(R.string.app_name),
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold
+        GreetingHeader(
+            title = stringResource(R.string.home_greeting),
+            subtitle = stringResource(R.string.home_greeting_subtitle),
+            modifier = sidePadding
         )
-        Text(
-            text = stringResource(R.string.app_tagline),
-            style = MaterialTheme.typography.bodyMedium
-        )
+
         Text(
             text = stringResource(R.string.home_question),
-            style = MaterialTheme.typography.titleLarge
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold,
+            modifier = sidePadding
         )
 
         ProgressSummaryCard(
@@ -87,41 +90,58 @@ fun HomeContent( //Sin estado, solo dibuja lo que recibe y avisa con callbacks. 
                 state.quizzesCompleted,
                 state.totalPoints
             ),
-            note = stringResource(R.string.home_progress_note)
+            note = stringResource(R.string.home_progress_note),
+            modifier = sidePadding
         )
 
-        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            ContinentCard(
-                title = stringResource(R.string.home_card_title_asia),
-                subtitle = stringResource(
-                    R.string.home_card_subtitle,
-                    state.asiaCount,
-                    QuizRules.QUESTIONS_PER_QUIZ
-                ),
-                imageRes = R.drawable.continent_asia,
-                color = AtlasAsia,
-                selected = state.selectedContinent == Continent.ASIA,
-                onClick = { onContinentSelected(Continent.ASIA) },
-                modifier = Modifier.weight(1f)
-            )
-            ContinentCard(
-                title = stringResource(R.string.home_card_title_europe),
-                subtitle = stringResource(
-                    R.string.home_card_subtitle,
-                    state.europeCount,
-                    QuizRules.QUESTIONS_PER_QUIZ
-                ),
-                imageRes = R.drawable.continent_europe,
-                color = AtlasEurope,
-                selected = state.selectedContinent == Continent.EUROPE,
-                onClick = { onContinentSelected(Continent.EUROPE) },
-                modifier = Modifier.weight(1f)
-            )
+        Text(
+            text = stringResource(R.string.home_featured_label).uppercase(),
+            style = MaterialTheme.typography.labelLarge,
+            fontWeight = FontWeight.Bold,
+            modifier = sidePadding
+        )
+
+        LazyRow(
+            contentPadding = PaddingValues(horizontal = 20.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            item {
+                ContinentCard(
+                    title = stringResource(R.string.home_card_title_asia),
+                    subtitle = stringResource(
+                        R.string.home_card_subtitle,
+                        state.asiaCount,
+                        QuizRules.QUESTIONS_PER_QUIZ
+                    ),
+                    imageRes = R.drawable.continent_asia,
+                    color = AtlasAsia,
+                    selected = state.selectedContinent == Continent.ASIA,
+                    onClick = { onContinentSelected(Continent.ASIA) },
+                    modifier = Modifier.width(220.dp)
+                )
+            }
+            item {
+                ContinentCard(
+                    title = stringResource(R.string.home_card_title_europe),
+                    subtitle = stringResource(
+                        R.string.home_card_subtitle,
+                        state.europeCount,
+                        QuizRules.QUESTIONS_PER_QUIZ
+                    ),
+                    imageRes = R.drawable.continent_europe,
+                    color = AtlasEurope,
+                    selected = state.selectedContinent == Continent.EUROPE,
+                    onClick = { onContinentSelected(Continent.EUROPE) },
+                    modifier = Modifier.width(220.dp)
+                )
+            }
         }
+
         if (state.selectedContinent == null) {
             Text(
                 text = stringResource(R.string.home_choose_continent),
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = sidePadding
             )
         }
 
@@ -132,14 +152,15 @@ fun HomeContent( //Sin estado, solo dibuja lo que recibe y avisa con callbacks. 
                     QuizRules.QUESTIONS_PER_QUIZ
                 ),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.error
+                color = MaterialTheme.colorScheme.error,
+                modifier = sidePadding
             )
         }
 
         Button(
             onClick = onStartClick,
             enabled = state.canStart,
-            modifier = Modifier
+            modifier = sidePadding
                 .fillMaxWidth()
                 .height(56.dp)
         ) {
@@ -153,7 +174,7 @@ fun HomeContent( //Sin estado, solo dibuja lo que recibe y avisa con callbacks. 
 
         OutlinedButton(
             onClick = onAddCountryClick,
-            modifier = Modifier
+            modifier = sidePadding
                 .fillMaxWidth()
                 .height(56.dp)
         ) {

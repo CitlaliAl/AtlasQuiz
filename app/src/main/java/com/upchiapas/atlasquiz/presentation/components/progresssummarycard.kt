@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.upchiapas.atlasquiz.presentation.theme.AtlasGreenDark
 
 @Composable
 fun ProgressSummaryCard(
@@ -20,24 +21,36 @@ fun ProgressSummaryCard(
     note: String,
     modifier: Modifier = Modifier
 ) {
+    val softContentColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.75f)
+
     Card(
         modifier = modifier.fillMaxWidth(),
+        shape = MaterialTheme.shapes.large,
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondary,
-            contentColor = MaterialTheme.colorScheme.onSecondary
+            containerColor = AtlasGreenDark,
+            contentColor = MaterialTheme.colorScheme.onPrimary
         )
     ) {
         Column(
             modifier = Modifier.padding(20.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            Text(text = label, style = MaterialTheme.typography.labelLarge)
+            Text(
+                text = label.uppercase(),
+                style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.Bold,
+                color = softContentColor
+            )
             Text(
                 text = summary,
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold
             )
-            Text(text = note, style = MaterialTheme.typography.bodySmall)
+            Text(
+                text = note,
+                style = MaterialTheme.typography.bodySmall,
+                color = softContentColor
+            )
         }
     }
 }

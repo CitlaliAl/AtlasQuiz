@@ -1,19 +1,15 @@
 package com.upchiapas.atlasquiz.presentation
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.upchiapas.atlasquiz.presentation.addcountry.AddCountryScreen
 import com.upchiapas.atlasquiz.presentation.home.HomeScreen
 import com.upchiapas.atlasquiz.presentation.home.HomeViewModel
 import com.upchiapas.atlasquiz.presentation.navigation.AtlasQuizRoutes
@@ -68,18 +64,8 @@ fun AtlasQuizApp() {
                 }
             )
         }
-        composable(AtlasQuizRoutes.ADD_COUNTRY) { PlaceholderScreen(AtlasQuizRoutes.ADD_COUNTRY) }
+        composable(AtlasQuizRoutes.ADD_COUNTRY) {
+            AddCountryScreen(onBack = { navController.popBackStack() })
+        }
     }
 }
-
-// Temporal: reemplazado pantalla por pantalla en los próximos commits
-@Composable
-private fun PlaceholderScreen(name: String) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(text = name, style = MaterialTheme.typography.headlineMedium)
-    }
-}
-
