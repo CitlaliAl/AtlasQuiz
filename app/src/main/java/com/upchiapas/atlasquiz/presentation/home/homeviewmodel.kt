@@ -31,4 +31,13 @@ class HomeViewModel : ViewModel() {
             )
         }
     }
+
+    fun onQuizCompleted(points: Int) {
+        _uiState.update { current ->
+            current.copy(
+                quizzesCompleted = current.quizzesCompleted + 1,
+                totalPoints = current.totalPoints + points
+            )
+        }
+    }
 }

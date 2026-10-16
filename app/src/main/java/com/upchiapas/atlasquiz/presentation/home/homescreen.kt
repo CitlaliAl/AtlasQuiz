@@ -98,6 +98,7 @@ fun HomeContent( //Sin estado, solo dibuja lo que recibe y avisa con callbacks. 
                     state.asiaCount,
                     QuizRules.QUESTIONS_PER_QUIZ
                 ),
+                imageRes = R.drawable.continent_asia,
                 color = AtlasAsia,
                 selected = state.selectedContinent == Continent.ASIA,
                 onClick = { onContinentSelected(Continent.ASIA) },
@@ -110,13 +111,13 @@ fun HomeContent( //Sin estado, solo dibuja lo que recibe y avisa con callbacks. 
                     state.europeCount,
                     QuizRules.QUESTIONS_PER_QUIZ
                 ),
+                imageRes = R.drawable.continent_europe,
                 color = AtlasEurope,
                 selected = state.selectedContinent == Continent.EUROPE,
                 onClick = { onContinentSelected(Continent.EUROPE) },
                 modifier = Modifier.weight(1f)
             )
         }
-
         if (state.selectedContinent == null) {
             Text(
                 text = stringResource(R.string.home_choose_continent),

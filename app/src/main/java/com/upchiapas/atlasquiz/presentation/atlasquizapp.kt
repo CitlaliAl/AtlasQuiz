@@ -8,15 +8,21 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.upchiapas.atlasquiz.presentation.home.HomeScreen
+import com.upchiapas.atlasquiz.presentation.home.HomeViewModel
 import com.upchiapas.atlasquiz.presentation.navigation.AtlasQuizRoutes
+import com.upchiapas.atlasquiz.presentation.quiz.QuizScreen
+import com.upchiapas.atlasquiz.presentation.quiz.QuizViewModel
 
 @Composable
 fun AtlasQuizApp() {
     val navController = rememberNavController()
+    val homeViewModel: HomeViewModel = viewModel()
+    val quizViewModel: QuizViewModel = viewModel()
 
     NavHost(
         navController = navController,
@@ -25,11 +31,25 @@ fun AtlasQuizApp() {
     ) {
         composable(AtlasQuizRoutes.HOME) {
             HomeScreen(
-                onStartQuiz = { navController.navigate(AtlasQuizRoutes.QUIZ) },
+                viewModel = homeViewModel,
+                onStartQuiz = { continent ->
+                    quizViewModel.startQuiz(continent)
+                    navController.navigate(AtlasQuizRoutes.QUIZ)
+                },
                 onAddCountry = { navController.navigate(AtlasQuizRoutes.ADD_COUNTRY) }
             )
         }
-        composable(AtlasQuizRoutes.QUIZ) { PlaceholderScreen(AtlasQuizRoutes.QUIZ) }
+        composable(AtlasQuizRoutes.QUIZ) {
+            QuizScreen(
+                viewModel = quizViewModel,
+                onQuizFinished = { score ->
+                    homeViewModel.onQuizCompleted(score)
+                    navController.navigate(AtlasQuizRoutes.RESULT) {
+                        popUpTo(AtlasQuizRoutes.QUIZ) { inclusive = true }
+                    }
+                }
+            )
+        }
         composable(AtlasQuizRoutes.RESULT) { PlaceholderScreen(AtlasQuizRoutes.RESULT) }
         composable(AtlasQuizRoutes.ADD_COUNTRY) { PlaceholderScreen(AtlasQuizRoutes.ADD_COUNTRY) }
     }
@@ -45,3 +65,4 @@ private fun PlaceholderScreen(name: String) {
         Text(text = name, style = MaterialTheme.typography.headlineMedium)
     }
 }
+
