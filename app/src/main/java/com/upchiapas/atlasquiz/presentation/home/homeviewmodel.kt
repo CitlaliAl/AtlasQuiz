@@ -1,43 +1,46 @@
 package com.upchiapas.atlasquiz.presentation.home
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.upchiapas.atlasquiz.data.repository.QuizRepository
 import com.upchiapas.atlasquiz.model.Continent
-import com.upchiapas.atlasquiz.model.QuizRules
-import com.upchiapas.atlasquiz.presentation.provisional.ProvisionalCatalog
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
-class HomeViewModel : ViewModel() {
+class HomeViewModel(
+    private val repository: QuizRepository
+) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(
-        HomeUiState(
-            asiaCount = ProvisionalCatalog.countriesOf(Continent.ASIA).size,
-            europeCount = ProvisionalCatalog.countriesOf(Continent.EUROPE).size
-        )
-    )
+    private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
-    fun onContinentSelected(continent: Continent) {
-        val available = ProvisionalCatalog.countriesOf(continent).size
-        val enough = available >= QuizRules.QUESTIONS_PER_QUIZ
-
-        _uiState.update { current ->
-            current.copy(
-                selectedContinent = continent,
-                canStart = enough,
-                needsMoreCountries = !enough
-            )
-        }
+    init {
+        observeRepository()
     }
 
-    fun onQuizCompleted(points: Int) {
-        _uiState.update { current ->
-            current.copy(
-                quizzesCompleted = current.quizzesCompleted + 1,
-                totalPoints = current.totalPoints + points
-            )
+    fun onContinentSelected(continent: Continent) {
+        _uiState.update { current -> current.copy(selectedContinent = continent) }
+    }
+
+    private fun observeRepository() {
+        viewModelScope.launch {
+            combine(repository.countries, repository.progress) { countries, progress ->
+                Pair(countries, progress)
+            }.collect { (countries, progress) ->
+                _uiState.update { current ->
+                    current.copy(
+                        countryCounts = Continent.entries.associateWith { continent ->
+                            countries.count { it.continent == continent }
+                        },
+                        quizzesCompleted = progress.quizzesCompleted,
+                        totalPoints = progress.totalPoints
+                    )
+                }
+            }
         }
     }
 }

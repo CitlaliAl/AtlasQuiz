@@ -1,16 +1,20 @@
 package com.upchiapas.atlasquiz.presentation.addcountry
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.upchiapas.atlasquiz.data.repository.QuizRepository
 import com.upchiapas.atlasquiz.model.Continent
 import com.upchiapas.atlasquiz.model.Country
-import com.upchiapas.atlasquiz.presentation.provisional.ProvisionalCatalog
 import java.text.Normalizer
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
-class AddCountryViewModel : ViewModel() {
+class AddCountryViewModel(
+    private val repository: QuizRepository
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AddCountryUiState())
     val uiState: StateFlow<AddCountryUiState> = _uiState.asStateFlow()
@@ -34,25 +38,28 @@ class AddCountryViewModel : ViewModel() {
     }
 
     fun onSaveClick() {
-        _uiState.update { current ->
+        viewModelScope.launch {
+            val current = _uiState.value
             val name = current.countryName.trim()
             val capital = current.capital.trim()
             val continent = current.continent
 
             val countryError = when {
                 name.isEmpty() -> FieldError.EMPTY
-                isDuplicate(name, current.addedCountries) -> FieldError.DUPLICATE
+                isDuplicate(name) -> FieldError.DUPLICATE
                 else -> null
             }
             val capitalError = if (capital.isEmpty()) FieldError.EMPTY else null
 
             if (countryError != null || capitalError != null || continent == null) {
-                current.copy(
-                    countryError = countryError,
-                    capitalError = capitalError,
-                    continentMissing = continent == null,
-                    lastAdded = null
-                )
+                _uiState.update {
+                    it.copy(
+                        countryError = countryError,
+                        capitalError = capitalError,
+                        continentMissing = continent == null,
+                        lastAdded = null
+                    )
+                }
             } else {
                 val country = Country(
                     id = "temp_" + normalize(name),
@@ -60,25 +67,26 @@ class AddCountryViewModel : ViewModel() {
                     capital = capital,
                     continent = continent
                 )
-                current.copy(
-                    countryName = "",
-                    capital = "",
-                    continent = null,
-                    countryError = null,
-                    capitalError = null,
-                    continentMissing = false,
-                    lastAdded = country,
-                    addedCountries = current.addedCountries + country
-                )
+                repository.addCountry(country)
+                _uiState.update {
+                    it.copy(
+                        countryName = "",
+                        capital = "",
+                        continent = null,
+                        countryError = null,
+                        capitalError = null,
+                        continentMissing = false,
+                        lastAdded = country,
+                        addedCountries = it.addedCountries + country
+                    )
+                }
             }
         }
     }
 
-    private fun isDuplicate(name: String, addedCountries: List<Country>): Boolean {
+    private suspend fun isDuplicate(name: String): Boolean {
         val target = normalize(name)
-        return (ProvisionalCatalog.countries + addedCountries).any { country ->
-            normalize(country.name) == target
-        }
+        return repository.getCountries().any { country -> normalize(country.name) == target }
     }
 
     private fun normalize(text: String): String =

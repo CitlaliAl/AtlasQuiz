@@ -28,7 +28,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.upchiapas.atlasquiz.R
 import com.upchiapas.atlasquiz.model.Continent
 import com.upchiapas.atlasquiz.model.QuizRules
@@ -42,7 +41,7 @@ import com.upchiapas.atlasquiz.presentation.theme.AtlasEurope
 fun HomeScreen(
     onStartQuiz: (Continent) -> Unit,
     onAddCountry: () -> Unit,
-    viewModel: HomeViewModel = viewModel()
+    viewModel: HomeViewModel
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -115,7 +114,7 @@ fun HomeContent(
                     title = stringResource(R.string.home_card_title_asia),
                     subtitle = stringResource(
                         R.string.home_card_subtitle,
-                        state.asiaCount,
+                        state.countryCounts[Continent.ASIA] ?: 0,
                         QuizRules.QUESTIONS_PER_QUIZ
                     ),
                     imageRes = R.drawable.continent_asia,
@@ -130,7 +129,7 @@ fun HomeContent(
                     title = stringResource(R.string.home_card_title_europe),
                     subtitle = stringResource(
                         R.string.home_card_subtitle,
-                        state.europeCount,
+                         state.countryCounts[Continent.EUROPE] ?: 0,
                         QuizRules.QUESTIONS_PER_QUIZ
                     ),
                     imageRes = R.drawable.continent_europe,

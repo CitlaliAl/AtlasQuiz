@@ -27,25 +27,27 @@ import com.upchiapas.atlasquiz.presentation.components.AnswerOptionStatus
 import com.upchiapas.atlasquiz.presentation.components.FeedbackBanner
 import com.upchiapas.atlasquiz.presentation.components.QuestionCard
 import com.upchiapas.atlasquiz.presentation.components.QuizProgressHeader
+import com.upchiapas.atlasquiz.presentation.components.ScreenHeader
 import com.upchiapas.atlasquiz.presentation.theme.AtlasAsia
 import com.upchiapas.atlasquiz.presentation.theme.AtlasEurope
 
 @Composable
-fun QuizScreen( //Con estado, observa el ViewModel y avisa cuando el quiz termina.
+fun QuizScreen(
     viewModel: QuizViewModel,
-    onQuizFinished: (Int) -> Unit,
-    onBack: () -> Boolean
+    onBack: () -> Unit,
+    onQuizFinished: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(state.isFinished) {
-        if (state.isFinished) onQuizFinished(state.score)
+        if (state.isFinished) onQuizFinished()
     }
 
     QuizContent(
         state = state,
         onAnswerSelected = viewModel::onAnswerSelected,
-        onContinueClick = viewModel::onContinue
+        onContinueClick = viewModel::onContinue,
+        onBackClick = onBack
     )
 }
 
@@ -54,6 +56,7 @@ fun QuizContent( //Sin estado: solo dibuja y reporta toques
     state: QuizUiState,
     onAnswerSelected: (String) -> Unit,
     onContinueClick: () -> Unit,
+    onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val question = state.currentQuestion ?: return
@@ -70,15 +73,23 @@ fun QuizContent( //Sin estado: solo dibuja y reporta toques
                 .padding(20.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-        QuizProgressHeader(
-            progressLabel = stringResource(
-                R.string.quiz_progress_label,
-                state.currentIndex + 1,
-                state.questions.size
-            ),
-            pointsLabel = stringResource(R.string.quiz_points_label, state.score),
-            progress = state.progress
-        )
+            ScreenHeader(
+                title = stringResource(
+                    R.string.quiz_top_title,
+                    stringResource(if (isEurope) R.string.continent_europe else R.string.continent_asia)
+                ),
+                onBackClick = onBackClick
+            )
+
+            QuizProgressHeader(
+                progressLabel = stringResource(
+                    R.string.quiz_progress_label,
+                    state.currentIndex + 1,
+                    state.questions.size
+                ),
+                pointsLabel = stringResource(R.string.quiz_points_label, state.score),
+                progress = state.progress
+            )
 
         QuestionCard(
             label = stringResource(

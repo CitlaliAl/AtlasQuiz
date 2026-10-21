@@ -1,15 +1,16 @@
 package com.upchiapas.atlasquiz.presentation
 
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.upchiapas.atlasquiz.AtlasQuizApplication
 import com.upchiapas.atlasquiz.presentation.addcountry.AddCountryScreen
 import com.upchiapas.atlasquiz.presentation.home.HomeScreen
 import com.upchiapas.atlasquiz.presentation.home.HomeViewModel
@@ -21,15 +22,15 @@ import com.upchiapas.atlasquiz.presentation.result.ResultScreen
 @Composable
 fun AtlasQuizApp() {
     val navController = rememberNavController()
-    val homeViewModel: HomeViewModel = viewModel()
-    val quizViewModel: QuizViewModel = viewModel()
+    val application = LocalContext.current.applicationContext as AtlasQuizApplication
+    val factory = application.module.viewModelFactory
+    val homeViewModel: HomeViewModel = viewModel(factory = factory)
+    val quizViewModel: QuizViewModel = viewModel(factory = factory)
 
     NavHost(
         navController = navController,
         startDestination = AtlasQuizRoutes.HOME,
-        modifier = Modifier
-            .fillMaxSize()
-            .safeDrawingPadding()
+        modifier = Modifier.safeDrawingPadding()
     ) {
         composable(AtlasQuizRoutes.HOME) {
             HomeScreen(
@@ -45,8 +46,7 @@ fun AtlasQuizApp() {
             QuizScreen(
                 viewModel = quizViewModel,
                 onBack = { navController.popBackStack() },
-                onQuizFinished = { score ->
-                    homeViewModel.onQuizCompleted(score)
+                onQuizFinished = {
                     navController.navigate(AtlasQuizRoutes.RESULT) {
                         popUpTo(AtlasQuizRoutes.QUIZ) { inclusive = true }
                     }
@@ -69,7 +69,10 @@ fun AtlasQuizApp() {
             )
         }
         composable(AtlasQuizRoutes.ADD_COUNTRY) {
-            AddCountryScreen(onBack = { navController.popBackStack() })
+            AddCountryScreen(
+                viewModel = viewModel(factory = factory),
+                onBack = { navController.popBackStack() }
+            )
         }
     }
 }

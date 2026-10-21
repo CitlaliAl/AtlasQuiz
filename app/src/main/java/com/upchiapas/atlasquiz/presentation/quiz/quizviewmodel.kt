@@ -1,30 +1,37 @@
 package com.upchiapas.atlasquiz.presentation.quiz
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.upchiapas.atlasquiz.data.repository.QuizRepository
 import com.upchiapas.atlasquiz.model.Continent
 import com.upchiapas.atlasquiz.model.Country
 import com.upchiapas.atlasquiz.model.QuizRules
-import com.upchiapas.atlasquiz.presentation.provisional.ProvisionalCatalog
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
-class QuizViewModel : ViewModel() {
+class QuizViewModel(
+    private val repository: QuizRepository
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(QuizUiState())
     val uiState: StateFlow<QuizUiState> = _uiState.asStateFlow()
 
     fun startQuiz(continent: Continent) {
-        val pool = ProvisionalCatalog.countriesOf(continent)
-        val questions = if (pool.size >= QuizRules.QUESTIONS_PER_QUIZ) {
-            pool.shuffled()
-                .take(QuizRules.QUESTIONS_PER_QUIZ)
-                .map { country -> buildQuestion(country, pool) }
-        } else {
-            emptyList()
+        _uiState.value = QuizUiState(continent = continent)
+        viewModelScope.launch {
+            val pool = repository.getCountries().filter { it.continent == continent }
+            val questions = if (pool.size >= QuizRules.QUESTIONS_PER_QUIZ) {
+                pool.shuffled()
+                    .take(QuizRules.QUESTIONS_PER_QUIZ)
+                    .map { country -> buildQuestion(country, pool) }
+            } else {
+                emptyList()
+            }
+            _uiState.update { current -> current.copy(questions = questions) }
         }
-        _uiState.value = QuizUiState(continent = continent, questions = questions)
     }
 
     fun restartQuiz() {
@@ -57,14 +64,15 @@ class QuizViewModel : ViewModel() {
     }
 
     fun onContinue() {
-        _uiState.update { current ->
-            when {
-                !current.isAnswered -> current
-                current.isLastQuestion -> current.copy(isFinished = true)
-                else -> current.copy(
-                    currentIndex = current.currentIndex + 1,
-                    selectedCapital = null
-                )
+        val current = _uiState.value
+        if (!current.isAnswered || current.isFinished) return //evita guardar el resultado dos veces si tocas “Ver resultados” muy rápido
+
+        if (current.isLastQuestion) {
+            _uiState.update { it.copy(isFinished = true) }
+            viewModelScope.launch { repository.saveQuizResult(current.score) }
+        } else {
+            _uiState.update {
+                it.copy(currentIndex = it.currentIndex + 1, selectedCapital = null)
             }
         }
     }
