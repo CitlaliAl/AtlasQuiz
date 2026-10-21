@@ -62,7 +62,7 @@ class AddCountryViewModel(
                 }
             } else {
                 val country = Country(
-                    id = "temp_" + normalize(name),
+                    id = "user_" + normalize(name),
                     name = name,
                     capital = capital,
                     continent = continent

@@ -5,5 +5,5 @@ import com.upchiapas.atlasquiz.di.AtlasQuizModule
 
 class AtlasQuizApplication : Application() {
 
-    val module: AtlasQuizModule by lazy { AtlasQuizModule() }
+    val module: AtlasQuizModule by lazy { AtlasQuizModule(this) }
 }

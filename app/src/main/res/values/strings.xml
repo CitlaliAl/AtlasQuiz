@@ -12,7 +12,7 @@
         <item quantity="one">%1$d quiz</item>
         <item quantity="other">%1$d quizzes</item>
     </plurals>
-    <string name="home_progress_note">Datos temporales: se reinician al cerrar la app</string>
+    <string name="home_progress_note">Tu progreso se guarda en este dispositivo</string>
     <string name="home_featured_label">Quiz destacado</string>
     <string name="home_card_title">Quiz de %1$s</string>
     <string name="home_card_title_asia">Quiz de Asia</string>
@@ -54,7 +54,7 @@
     <string name="result_go_home">Volver al inicio</string>
 
     <string name="add_country_title">Agregar país</string>
-    <string name="add_country_subtitle">Añádelo a tu catálogo temporal</string>
+    <string name="add_country_subtitle">Añádelo a tu catálogo</string>
     <string name="add_country_field_country">País</string>
     <string name="add_country_field_capital">Capital</string>
     <string name="add_country_continent_label">Continente</string>
@@ -66,7 +66,6 @@
     <string name="add_country_error_continent">Elige un continente</string>
     <string name="add_country_save">Guardar país</string>
     <string name="add_country_cancel">Cancelar</string>
-    <string name="add_country_success">Se agregó %1$s (%2$s) de forma temporal. No se guardará al cerrar la app.</string>
-    <string name="add_country_session_title">Agregados temporalmente</string>
-    <string name="add_country_item_detail">%1$s · %2$s</string>
+    <string name="add_country_success">Se agregó %1$s (%2$s) a tu catálogo. Se guarda en este dispositivo.</string>
+    <string name="add_country_session_title">Países agregados</string><string name="add_country_item_detail">%1$s · %2$s</string>
 </resources>
