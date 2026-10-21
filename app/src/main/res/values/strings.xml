@@ -7,9 +7,14 @@
     <string name="home_greeting_subtitle">Aprende capitales</string>
     <string name="home_question">¿Qué quieres practicar?</string>
     <string name="home_progress_label">Tu progreso</string>
-    <string name="home_progress_summary">%1$d quizzes · %2$d puntos</string>
+    <string name="home_progress_summary">%1$s · %2$d puntos</string>
+    <plurals name="home_quizzes_count">
+        <item quantity="one">%1$d quiz</item>
+        <item quantity="other">%1$d quizzes</item>
+    </plurals>
     <string name="home_progress_note">Datos temporales: se reinician al cerrar la app</string>
     <string name="home_featured_label">Quiz destacado</string>
+    <string name="home_card_title">Quiz de %1$s</string>
     <string name="home_card_title_asia">Quiz de Asia</string>
     <string name="home_card_title_europe">Quiz de Europa</string>
     <string name="home_card_subtitle">%1$d países · %2$d preguntas</string>
@@ -22,10 +27,15 @@
     <string name="continent_asia">Asia</string>
     <string name="continent_europe">Europa</string>
 
+    <string name="quiz_top_title">Quiz · %1$s</string>
     <string name="quiz_progress_label">Pregunta %1$d de %2$d</string>
     <string name="quiz_points_label">%1$d puntos</string>
     <string name="quiz_question">¿Cuál es la capital de %1$s?</string>
+    <string name="quiz_feedback_correct_title">+%1$d puntos</string>
+    <string name="quiz_feedback_correct_message">¡Correcto!</string>
     <string name="quiz_feedback_correct">¡Correcto! Ganaste %1$d puntos.</string>
+    <string name="quiz_feedback_wrong_title">0 puntos</string>
+    <string name="quiz_feedback_wrong_message">Incorrecto. La capital de %1$s es %2$s.</string>
     <string name="quiz_feedback_wrong">Incorrecto. La capital de %1$s es %2$s.</string>
     <string name="quiz_option_correct">Respuesta correcta</string>
     <string name="quiz_option_wrong">Respuesta incorrecta</string>
@@ -44,14 +54,18 @@
     <string name="result_go_home">Volver al inicio</string>
 
     <string name="add_country_title">Agregar país</string>
-    <string name="add_country_intro">Registra un país y su capital. Los datos son temporales y se pierden al cerrar la app.</string>
+    <string name="add_country_subtitle">Añádelo a tu catálogo temporal</string>
     <string name="add_country_field_country">País</string>
     <string name="add_country_field_capital">Capital</string>
     <string name="add_country_continent_label">Continente</string>
+    <string name="add_country_placeholder_country">Ej. Japón</string>
+    <string name="add_country_placeholder_capital">Ej. Tokio</string>
+    <string name="add_country_placeholder_continent">Seleccionar continente</string>
     <string name="add_country_error_empty">Este campo es obligatorio</string>
     <string name="add_country_error_duplicate">Este país ya está registrado</string>
     <string name="add_country_error_continent">Elige un continente</string>
-    <string name="add_country_save">Agregar país</string>
+    <string name="add_country_save">Guardar país</string>
+    <string name="add_country_cancel">Cancelar</string>
     <string name="add_country_success">Se agregó %1$s (%2$s) de forma temporal. No se guardará al cerrar la app.</string>
     <string name="add_country_session_title">Agregados temporalmente</string>
     <string name="add_country_item_detail">%1$s · %2$s</string>

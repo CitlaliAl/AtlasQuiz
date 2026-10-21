@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -31,7 +33,8 @@ import com.upchiapas.atlasquiz.presentation.theme.AtlasEurope
 @Composable
 fun QuizScreen( //Con estado, observa el ViewModel y avisa cuando el quiz termina.
     viewModel: QuizViewModel,
-    onQuizFinished: (Int) -> Unit
+    onQuizFinished: (Int) -> Unit,
+    onBack: () -> Boolean
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -56,13 +59,17 @@ fun QuizContent( //Sin estado: solo dibuja y reporta toques
     val question = state.currentQuestion ?: return
     val isEurope = state.continent == Continent.EUROPE
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(20.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+    Surface(
+        modifier = modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
     ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
         QuizProgressHeader(
             progressLabel = stringResource(
                 R.string.quiz_progress_label,
@@ -120,13 +127,11 @@ fun QuizContent( //Sin estado: solo dibuja y reporta toques
                 )
             )
         }
+      }
     }
 }
 
-@Composable
-fun FeedbackBanner(message: String, isCorrect: Boolean) {
-    TODO("Not yet implemented")
-}
+
 
 private fun optionStatus(
     option: String,

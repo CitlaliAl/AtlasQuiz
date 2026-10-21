@@ -15,3 +15,8 @@ val AtlasErrorSoft = Color(0xFFFBE3E3)
 val AtlasAsia = Color(0xFFB1BEF5)
 val AtlasEurope = Color(0xFFF9D27A)
 val AtlasGreenDark = Color(0xFF2D4A3A)
+
+val AtlasMint = Color(0xFFBFE6A0)
+val AtlasGold = Color(0xFFF2B705)
+val AtlasGlobeBlue = Color(0xFF3B7DD8)
+val AtlasGlobeGreen = Color(0xFF5BAA5B)

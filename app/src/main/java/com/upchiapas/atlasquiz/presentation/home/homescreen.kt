@@ -19,6 +19,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -63,13 +64,17 @@ fun HomeContent(
 ) {
     val sidePadding = Modifier.padding(horizontal = 20.dp)
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(vertical = 20.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+    Surface(
+        modifier = modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
     ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(vertical = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
         GreetingHeader(
             title = stringResource(R.string.home_greeting),
             subtitle = stringResource(R.string.home_greeting_subtitle),
@@ -182,5 +187,6 @@ fun HomeContent(
             Spacer(modifier = Modifier.width(8.dp))
             Text(text = stringResource(R.string.home_add_country))
         }
+      }
     }
 }

@@ -18,7 +18,8 @@ fun FormTextField(
     label: String,
     errorMessage: String?,
     imeAction: ImeAction,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    placeholder: String
 ) {
     OutlinedTextField(
         value = value,

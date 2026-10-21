@@ -2,14 +2,18 @@ package com.upchiapas.atlasquiz.presentation.addcountry
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -22,7 +26,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.upchiapas.atlasquiz.R
 import com.upchiapas.atlasquiz.model.Continent
-import com.upchiapas.atlasquiz.presentation.components.ContinentSelector
+import com.upchiapas.atlasquiz.presentation.components.ContinentDropdown
 import com.upchiapas.atlasquiz.presentation.components.CountryListItem
 import com.upchiapas.atlasquiz.presentation.components.FeedbackBanner
 import com.upchiapas.atlasquiz.presentation.components.FormTextField
@@ -56,27 +60,28 @@ fun AddCountryContent(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(20.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+    Surface(
+        modifier = modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
     ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
         ScreenHeader(
             title = stringResource(R.string.add_country_title),
+            subtitle = stringResource(R.string.add_country_subtitle),
             onBackClick = onBackClick
-        )
-
-        Text(
-            text = stringResource(R.string.add_country_intro),
-            style = MaterialTheme.typography.bodyMedium
         )
 
         FormTextField(
             value = state.countryName,
             onValueChange = onCountryNameChange,
             label = stringResource(R.string.add_country_field_country),
+            placeholder = stringResource(R.string.add_country_placeholder_country),
             errorMessage = fieldErrorMessage(state.countryError),
             imeAction = ImeAction.Next
         )
@@ -85,25 +90,30 @@ fun AddCountryContent(
             value = state.capital,
             onValueChange = onCapitalChange,
             label = stringResource(R.string.add_country_field_capital),
+            placeholder = stringResource(R.string.add_country_placeholder_capital),
             errorMessage = fieldErrorMessage(state.capitalError),
             imeAction = ImeAction.Done
         )
 
-        Text(
-            text = stringResource(R.string.add_country_continent_label),
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold
-        )
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(
+                text = stringResource(R.string.add_country_continent_label),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+            ContinentDropdown(
+                selected = state.continent,
+                placeholder = stringResource(R.string.add_country_placeholder_continent),
+                onSelected = onContinentSelected,
+                errorMessage = if (state.continentMissing) {
+                    stringResource(R.string.add_country_error_continent)
+                } else {
+                    null
+                }
+            )
+        }
 
-        ContinentSelector(
-            selected = state.continent,
-            onSelected = onContinentSelected,
-            errorMessage = if (state.continentMissing) {
-                stringResource(R.string.add_country_error_continent)
-            } else {
-                null
-            }
-        )
+        Spacer(modifier = Modifier.height(16.dp))
 
         Button(
             onClick = onSaveClick,
@@ -112,6 +122,16 @@ fun AddCountryContent(
                 .height(56.dp)
         ) {
             Text(text = stringResource(R.string.add_country_save))
+        }
+
+        OutlinedButton(
+            onClick = onBackClick,
+            border = BorderStroke(1.5.dp, MaterialTheme.colorScheme.primary),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp)
+        ) {
+            Text(text = stringResource(R.string.add_country_cancel))
         }
 
         state.lastAdded?.let { added ->
@@ -142,6 +162,7 @@ fun AddCountryContent(
                 )
             }
         }
+      }
     }
 }
 

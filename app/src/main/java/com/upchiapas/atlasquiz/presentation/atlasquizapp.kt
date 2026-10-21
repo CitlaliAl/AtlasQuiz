@@ -1,5 +1,6 @@
 package com.upchiapas.atlasquiz.presentation
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,7 +27,9 @@ fun AtlasQuizApp() {
     NavHost(
         navController = navController,
         startDestination = AtlasQuizRoutes.HOME,
-        modifier = Modifier.safeDrawingPadding()
+        modifier = Modifier
+            .fillMaxSize()
+            .safeDrawingPadding()
     ) {
         composable(AtlasQuizRoutes.HOME) {
             HomeScreen(
@@ -41,6 +44,7 @@ fun AtlasQuizApp() {
         composable(AtlasQuizRoutes.QUIZ) {
             QuizScreen(
                 viewModel = quizViewModel,
+                onBack = { navController.popBackStack() },
                 onQuizFinished = { score ->
                     homeViewModel.onQuizCompleted(score)
                     navController.navigate(AtlasQuizRoutes.RESULT) {
